@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Responsive Toggle Buttons</title>
+  <style>
+    :root {
+      --green: #4caf50;
+      --gray: #ccc;
+      --track-bg: #eee;
+      --handle-size: 36.9px;
+      --toggle-width: 99px;
+      --toggle-height: 45.4px;
+      --gap: 25px;
+      --font-color: #222;
+      --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      
+      font-family: var(--font-family);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 85vh;
+      color: var(--font-color);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    h1 {
+      font-size: 2.0rem;
+      font-weight: bold;
+      margin-bottom: 25px;
+      color: #333;
+      text-align: center;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: var(--gap);
+      width: 80%;
+      max-width: 500px;
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0px 0px 20px -10px black;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .label {
+      font-size: 1.62rem;
+      min-width: 130px;
+      text-align: right;
+      text-decoration:bold;
+    }
+
+    .toggle {
+      position: relative;
+      width: var(--toggle-width);
+      height: var(--toggle-height);
+      background-color: var(--gray);
+      border-radius: var(--toggle-height);
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    }
+
+    .handle {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: var(--handle-size);
+      height: var(--handle-size);
+      background-color: white;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .toggle.on {
+      background-color: var(--green);
+    }
+
+    .toggle.on .handle {
+      left: calc(100% - var(--handle-size) - 3px);
+      background-color: white;
+    }
+
+    .toggle:focus {
+      outline: none;
+    }
+
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: black;
+      font-size: 1.6rem;
+      font-weight: bold;
+      z-index: 9999;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .popup-overlay div {
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <h1>Tongle The Options</h1>
+  <div class="container">
+    <div class="toggle-row">
+      <div class="label">Human</div>
+      <div class="toggle" data-id="0" tabindex="0">
+        <div class="handle"></div>
+      </div>
+    </div>
+    <div class="toggle-row">
+      <div class="label">Has a brain</div>
+      <div class="toggle" data-id="1" tabindex="0">
+        <div class="handle"></div>
+      </div>
+    </div>
+    <div class="toggle-row">
+      <div class="label">Ayesha</div>
+      <div class="toggle" data-id="2" tabindex="0">
+        <div class="handle"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const toggles = document.querySelectorAll('.toggle');
+    const onToggles = [];
+    let toggleAttemptCounter = 0;
+
+    function showPopup() {
+      const popup = document.createElement('div');
+      popup.className = 'popup-overlay';
+      popup.innerHTML = '<div>Dfr why you don’t accept that Ayesha can’t be all of them</div>';
+      document.body.appendChild(popup);
+    }
+
+    toggles.forEach((toggle, index) => {
+      toggle.addEventListener('click', () => {
+        if (document.querySelector('.popup-overlay')) return;
+
+        if (toggle.classList.contains('on')) {
+          toggle.classList.remove('on');
+          const idx = onToggles.indexOf(index);
+          if (idx !== -1) onToggles.splice(idx, 1);
+        } else {
+          if (onToggles.length >= 2) {
+            toggleAttemptCounter++;
+            const firstOn = onToggles.shift();
+            toggles[firstOn].classList.remove('on');
+          }
+          toggle.classList.add('on');
+          onToggles.push(index);
+        }
+
+        if (toggleAttemptCounter >= 5) {
+          showPopup();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
